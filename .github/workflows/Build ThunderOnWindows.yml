@@ -92,12 +92,3 @@ jobs:
       run: dotnet build --no-build
 
 
-# ----- Upload artifacts -----
-    - name: Tar files
-      run: tar -czvf ${{matrix.type}}${{matrix.version}}.tar.gz artifacts
-    
-    - name: Upload
-      uses: actions/upload-artifact@v4
-      with:
-        name: Thunder-${{matrix.type}}${{matrix.version}}-artifact
-        path: ${{matrix.type}}${{matrix.version}}.tar.gz
