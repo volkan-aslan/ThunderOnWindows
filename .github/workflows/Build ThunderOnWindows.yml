@@ -74,6 +74,23 @@ jobs:
       run: |
         cd ThunderOnWindows
         "%devEnv%" /Build "${{matrix.type}}|x${{matrix.version}}"  "%solution%"
+        mkdir ..\artifacts\Debug
+        mkdir ..\artifacts\Persistent
+        mkdir ..\artifacts\temp\MessageDispatcher
+        move lib\static_x64\libcrypto-1_1-x64.dll ..\artifacts\Debug\libcrypto-1_1-x64.dll
+        move lib\static_x64\libssl-1_1-x64.dll ..\artifacts\Debug\libssl-1_1-x64.dll
+        robocopy ThunderUI\dist ..\artifacts\Debug\Plugins\Controller\UI /S
+        
+    
+    - name: Add ms-build
+      uses: microsoft/setup-msbuild@v2
+      
+    - name: Build app for release
+      run: msbuild Thunder.sln -t:rebuild -verbosity:diag -property:Configuration=Release -p:AdditionalConfigFile="ExampleConfigWindows.json"
+
+    - name: Run Image
+      run: dotnet build --no-build
+
 
 # ----- Upload artifacts -----
     - name: Tar files
